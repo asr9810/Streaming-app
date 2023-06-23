@@ -1,8 +1,10 @@
 import React from 'react'
-// import { useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 
 const SideBar = () => {
+  const sideBarMenu = useSelector((store)=> store.sideBar.isSideBarOpen)
+  if(!sideBarMenu) return null;
   // const isSideBarOpen = useSelector(store => store.SideBar.togleSideBar)
   // if(isSideBarOpen) return null;
   return (
