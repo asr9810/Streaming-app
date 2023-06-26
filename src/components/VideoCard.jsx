@@ -2,11 +2,11 @@ import React from 'react'
 
 
 const VideoCard = ({data}) => {
-    
+
     
     
   return (
-    <div className='h-[310px] shadow-lg w-[360px]'>
+    <div className='h-[310px] w-[360px] m-4'>
       <img className='w-[360px] h-[195px] rounded-lg' src={data?.snippet?.thumbnails?.high?.url} alt="" />
       <div className='p-2'>
         <div className='h-[50px] text-ellipsis overflow-hidden '>
