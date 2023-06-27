@@ -4,13 +4,17 @@ import { BiUserCircle } from "react-icons/bi";
 import { BsSearch } from 'react-icons/bs'
 // import user from '../images/user.png'
 import Logo from "../images/Logo.png";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { toggleSideBar } from "./utiles/sideBarSlice";
+import { cacheResult } from "./utiles/suggestionSlice";
+
+
 
 
 const Header = () => {
   const [searchInput, setSearchInput] = useState(" ");
   const [suggestionList, setSuggestionList] = useState([])
+  const [showSuggestion, setShowSuggestion] = useState(true)
 
   // dispatch the action for toggling the sidebar menu
   const dispatch = useDispatch();
@@ -18,10 +22,16 @@ const Header = () => {
     dispatch(toggleSideBar());
   };
 
+  const searchCache = useSelector(store => store.search)
   useEffect(() => {
      
       const timer = setTimeout(()=>{
-        getSuggestionData();
+        if(searchCache[searchInput]){
+          setSuggestionList(searchCache[searchInput])
+        }else{
+          getSuggestionData();
+        }
+        
       },200)
 
       return ()=>{
@@ -37,13 +47,16 @@ const Header = () => {
       );
       const data = await res.json();
       setSuggestionList(data[1])
-      console.log(data[1]);
+      dispatch(cacheResult({
+        [searchInput]: data[1]
+      }))
+      
     } catch (error) {
       console.error(error);
     }
   };
 
-  console.log("render");
+ 
 
   return (
     <div className="p-0 m-0 justify-between flex shadow-lg">
@@ -61,13 +74,15 @@ const Header = () => {
           value={searchInput}
           onChange={(e) => setSearchInput(e.target.value)}
           placeholder="Search"
+          onFocus={()=>setShowSuggestion(true)}
+          onBlur={()=>setShowSuggestion(false)}
         />
         <button className="cursor-pointer hover:bg-gray-400 border w-20 bg-gray-100 border-gray-400 p-2  rounded-r-full justify-center">
           <BsSearch className="mx-auto  " />
         </button>
         <div className="bg-white absolute left-[0px] top-[48px] w-[568px] flex flex-col rounded-2xl shadow-xl ">
           <ul>
-            {suggestionList.map((item, index)=>(<li className="py-[7px] hover:bg-gray-200 flex " key={index}><BsSearch className="m-[6px] mr-[12px]"/>{item}</li>))}
+            {showSuggestion && (suggestionList.map((item, index)=>(<li className="py-[7px] hover:bg-gray-200 flex " key={index}><BsSearch className="m-[6px] mr-[12px]"/>{item}</li>)))}
           </ul>
         </div>
       
