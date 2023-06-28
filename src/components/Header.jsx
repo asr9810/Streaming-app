@@ -48,7 +48,7 @@ const Header = () => {
       const data = await res.json();
       setSuggestionList(data[1])
       dispatch(cacheResult({
-        [searchInput]: data[1]
+        [searchInput]: data[1],
       }))
       
     } catch (error) {
